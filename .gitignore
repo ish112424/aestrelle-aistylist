@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Environment variables (keep your API keys safe!)
+.env
+
+# Database file (local data)
+*.db
+
+# Python virtual environment
+.venv/
+
+# VS Code settings
+.vscode/
+
+# Upload files
+public/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db

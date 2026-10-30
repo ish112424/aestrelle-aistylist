@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aestrelle | AI Fashion Assistant</title>
+  <meta name="description" content="aestrelle — your personal AI stylist. Get outfit recommendations based on your weather, event, and style preferences.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen">
+    <div class="splash-content">
+      <img src="logo.png" alt="aestrelle logo" class="splash-logo">
+      <h1 class="splash-text">aestrelle</h1>
+    </div>
+  </div>  <!-- TOAST CONTAINER -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- STICKY NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="logo.png" alt="aestrelle" class="nav-logo-img">
+        <span class="nav-logo-text">aestrelle</span>
+      </a>
+      <div class="nav-actions">
+        <span id="user-greeting" class="nav-greeting"></span>
+        <button id="auth-btn" class="btn-outline">Login / Register</button>
+        <button id="logout-btn" class="btn-outline" style="display:none;">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BACKGROUND DECORATION -->
+  <div class="background-orb orb-one"></div>
+  <div class="background-orb orb-two"></div>
+
+  <div class="page-shell">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="sparkles" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <p class="eyebrow">AI Outfit Curation</p>
+        <h1>Dress smart for the&nbsp;moment.</h1>
+        <p class="hero-text">
+          Tell aestrelle where you're going, the weather outside, and your personal style —
+          it builds a complete, wearable outfit instantly.
+        </p>
+        <div class="hero-pill-row">
+          <span class="hero-pill">🌤 Weather aware</span>
+          <span class="hero-pill">✨ AI powered</span>
+          <span class="hero-pill">👗 Your wardrobe</span>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="stat-card">
+          <span>Smart matching</span>
+          <strong>Event + weather + style</strong>
+        </div>
+        <div class="stat-card">
+          <span>Looks gallery</span>
+          <strong>Browse by occasion</strong>
+        </div>
+        <div class="stat-card">
+          <span>AI memory</span>
+          <strong>Remembers your picks</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIGITAL WARDROBE (collapsible, logged-in only) -->
+    <section id="wardrobe-panel" class="panel wardrobe-panel" style="display:none;">
+      <div class="wardrobe-header" id="wardrobe-toggle" role="button" aria-expanded="false">
+        <div>
+          <p class="eyebrow">Your Collection</p>
+          <h2 class="section-h2">Digital Wardrobe</h2>
+        </div>
+        <span class="wardrobe-chevron">▾</span>
+      </div>
+      <div class="wardrobe-body" id="wardrobe-body" style="display:none;">
+        <p class="section-note" style="margin-bottom:18px;">Upload your clothes. AI will analyse them and prioritise them in outfit suggestions.</p>
+        <form id="wardrobe-form" class="wardrobe-form">
+          <label class="upload-label" for="wardrobe-upload">
+            <span class="upload-icon">📂</span>
+            <span id="upload-label-text">Choose a clothing photo</span>
+            <input type="file" id="wardrobe-upload" accept="image/*" required>
+          </label>
+          <button type="submit" class="primary-button" id="wardrobe-submit" style="width:auto; padding:12px 28px;">Analyse &amp; Save</button>
+        </form>
+        <p id="wardrobe-status"></p>
+        <div id="wardrobe-grid" class="wardrobe-grid"></div>
+      </div>
+    </section>
+
+    <!-- MAIN LAYOUT -->
+    <main class="layout">
+
+      <!-- FORM PANEL -->
+      <section class="panel form-panel">
+        <div class="section-heading" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <p class="eyebrow">Your Preferences</p>
+            <h2 class="section-h2">Build my outfit</h2>
+            <p class="section-note">Pick the mood and let the AI turn it into a wearable outfit.</p>
+          </div>
+          <button type="button" id="dna-badge-btn" class="dna-badge" title="Configure your personalized Style DNA">
+            <span class="dna-icon">🧬</span> <span id="dna-badge-text">Build Style DNA</span>
+          </button>
+        </div>
+
+        <form id="recommendation-form" class="recommendation-form">
+          <div class="form-field">
+            <label for="eventType">Event type</label>
+            <select id="eventType" name="eventType" required>
+              <option value="" disabled selected>— Select event —</option>
+              <option value="casual">Casual</option>
+              <option value="formal">Formal</option>
+              <option value="party">Party</option>
+              <option value="sports">Sports</option>
+              <option value="travel">Travel</option>
+              <option value="date-night">Date night</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="weather">Weather</label>
+            <div class="weather-row">
+              <select id="weather" name="weather" required>
+                <option value="" disabled selected>— Select or detect —</option>
+                <option value="extreme-heat">Extreme Heat</option>
+                <option value="humid">Humid &amp; Sticky</option>
+                <option value="monsoon">Monsoon / Rainy</option>
+                <option value="mild-winter">Mild Winter</option>
+                <option value="cold">Cold</option>
+              </select>
+              <button type="button" id="detect-weather-btn" class="btn-detect">
+                <span id="detect-icon">📍</span> Detect
+              </button>
+            </div>
+            <small id="weather-status" class="field-hint"></small>
+          </div>
+
+          <div class="form-field">
+            <label for="colorPalette">Color palette</label>
+            <select id="colorPalette" name="colorPalette" required>
+              <option value="" disabled selected>— Select palette —</option>
+              <option value="neutral">Neutral</option>
+              <option value="earthy">Earthy</option>
+              <option value="pastel">Pastel</option>
+              <option value="bold">Bold</option>
+              <option value="monochrome">Monochrome</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="style">Style direction</label>
+            <select id="style" name="style" required>
+              <option value="" disabled selected>— Select style —</option>
+              <option value="smart-casual">Smart Casual</option>
+              <option value="relaxed-comfort">Relaxed & Comfortable</option>
+              <option value="simple-minimal">Simple & Minimalist</option>
+              <option value="trendy">Trendy / Streetwear</option>
+              <option value="elegant">Elegant & Polished</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="gender">For</label>
+              <select id="gender" name="gender" required>
+                <option value="" disabled selected>— Select —</option>
+                <option value="womenswear">Women</option>
+                <option value="menswear">Men</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="outfitType">Outfit Type</label>
+              <select id="outfitType" name="outfitType" required>
+                <option value="" disabled selected>— Select —</option>
+                <option value="full-outfit">Full Outfit</option>
+                <option value="tops">Focus on Tops</option>
+                <option value="bottoms">Focus on Bottoms</option>
+                <option value="dress">Dress / One-Piece</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-field" style="margin-bottom: 8px;">
+            <label for="customPrompt">AI Custom Prompt (Optional)</label>
+            <textarea id="customPrompt" name="customPrompt" placeholder="e.g. I want an edgy cyberpunk vibe..." style="width: 100%; padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid #e8ddd6; background: var(--bg); color: var(--text); font-size: 0.88rem; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
+          </div>
+
+          <button type="submit" class="primary-button" id="recommend-btn">
+            <span id="recommend-btn-text">✦ Recommend Outfit</span>
+            <span id="recommend-btn-loader" class="btn-loader" style="display:none;"></span>
+          </button>
+        </form>
+
+        <div class="memory-chip" id="memory-chip" aria-live="polite"></div>
+      </section>
+
+      <!-- RESULT PANEL -->
+      <section class="panel result-panel">
+        <div class="section-heading">
+          <p class="eyebrow">Recommendation</p>
+          <h2 class="section-h2">Your styled look</h2>
+        </div>
+        <article id="result-card" class="result-card">
+          <div class="placeholder-state">
+            <div class="placeholder-icon">✦</div>
+            <h3>Ready when you are</h3>
+            <p>Fill in your preferences and let aestrelle build your perfect outfit.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- DIVIDER -->
+    <div class="section-divider">
+      <span>Inspiration Gallery</span>
+    </div>
+
+    <!-- GALLERY -->
+    <section class="panel gallery-panel">
+      <div class="gallery-header">
+        <div class="section-heading">
+          <p class="eyebrow">Photo Gallery</p>
+          <h2 class="section-h2">Explore outfit ideas</h2>
+        </div>
+        <div class="gallery-filters" id="gallery-filters">
+          <button class="filter-button active" data-filter="all">All</button>
+          <button class="filter-button" data-filter="casual">Casual</button>
+          <button class="filter-button" data-filter="formal">Formal</button>
+          <button class="filter-button" data-filter="party">Party</button>
+          <button class="filter-button" data-filter="sports">Sports</button>
+          <button class="filter-button" data-filter="trending">Trending</button>
+        </div>
+      </div>
+      <div id="gallery-grid" class="gallery-grid"></div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <p>© 2026 <strong>aestrelle</strong> — AI Fashion Assistant · Built for college project</p>
+    </footer>
+
+  </div>
+
+  <!-- RESULT TEMPLATE -->
+  <template id="result-template">
+    <div class="result-top-row">
+      <div class="result-tag-row">
+        <span id="result-event" class="tag"></span>
+        <span id="result-weather" class="tag"></span>
+        <span id="result-style" class="tag"></span>
+      </div>
+      <button id="save-outfit-btn" class="save-btn" style="display:none;">♡ Save Outfit</button>
+    </div>
+    <div id="outfit-combinations-container" class="combinations-container">
+      <!-- Outfits will be injected here -->
+    </div>
+  </template>
+
+  <!-- SINGLE OUTFIT COMBINATION TEMPLATE -->
+  <template id="outfit-combo-template">
+    <div class="outfit-combo-card">
+      <div class="combo-cover">
+        <img class="combo-cover-img" alt="Outfit Aesthetic Cover">
+        <div class="combo-cover-overlay"></div>
+      </div>
+      <div class="combo-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <h3 class="combo-title"></h3>
+        <button type="button" class="btn-outline download-lookbook-btn" title="Download this lookbook card as a Pinterest PNG" style="pointer-events: auto; z-index: 10;">📥 Download Card</button>
+      </div>
+      <div class="outfit-cards">
+        <div class="outfit-card">
+          <div class="outfit-card-icon">👕</div>
+          <div class="outfit-card-info">
+            <h4>Top</h4>
+            <p class="combo-top"></p>
+          </div>
+          <div class="color-swatch-badge combo-top-swatch" style="display: none;"></div>
+        </div>
+        <div class="outfit-card">
+          <div class="outfit-card-icon">👖</div>
+          <div class="outfit-card-info">
+            <h4>Bottom</h4>
+            <p class="combo-bottom"></p>
+          </div>
+          <div class="color-swatch-badge combo-bottom-swatch" style="display: none;"></div>
+        </div>
+        <div class="outfit-card">
+          <div class="outfit-card-icon">👟</div>
+          <div class="outfit-card-info">
+            <h4>Shoes</h4>
+            <p class="combo-shoes"></p>
+          </div>
+          <div class="color-swatch-badge combo-shoes-swatch" style="display: none;"></div>
+        </div>
+        <div class="outfit-card">
+          <div class="outfit-card-icon">⌚</div>
+          <div class="outfit-card-info">
+            <h4>Accessory</h4>
+            <p class="combo-accessory"></p>
+          </div>
+          <div class="color-swatch-badge combo-accessory-swatch" style="display: none;"></div>
+        </div>
+        <div class="outfit-card outfit-card-wide">
+          <div class="outfit-card-icon">💡</div>
+          <div class="outfit-card-info">
+            <h4>Why it works</h4>
+            <p class="combo-explanation"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- STYLE DNA ONBOARDING MODAL -->
+  <div id="style-dna-modal">
+    <div id="style-dna-modal-content">
+      <div class="dna-modal-header">
+        <h2 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 6px;">🧬 Build Your Style DNA</h2>
+        <p style="color: var(--text-muted); font-size: 0.86rem; line-height: 1.5; margin-bottom: 12px;">Complete this quick 3-step visual quiz to personalize all future recommendations!</p>
+        <div class="dna-progress-container">
+          <div id="dna-progress-bar"></div>
+        </div>
+      </div>
+      
+      <!-- STEP 1: SILHOUETTE & FIT -->
+      <div class="dna-quiz-step active" data-step="1">
+        <h3 style="font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em; margin-bottom: 14px;">Step 1: Choose Your Preferred Fit & Silhouette</h3>
+        <div class="dna-cards-grid">
+          <div class="dna-card" data-step="1" data-val="oversized">
+            <div class="dna-card-emoji">👕</div>
+            <h4>Oversized & Relaxed</h4>
+            <p>Loose cuts, street style, comfortable and laid-back.</p>
+          </div>
+          <div class="dna-card" data-step="1" data-val="tailored">
+            <div class="dna-card-emoji">👔</div>
+            <h4>Tailored & Fitted</h4>
+            <p>Smart contours, structured silhouettes, sharp and modern.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- STEP 2: COLOR HARMONY -->
+      <div class="dna-quiz-step" data-step="2" style="display: none;">
+        <h3 style="font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em; margin-bottom: 14px;">Step 2: Choose Your Color Harmony Palette</h3>
+        <div class="dna-cards-grid">
+          <div class="dna-card" data-step="2" data-val="warm">
+            <div class="dna-card-emoji">🍂</div>
+            <h4>Warm Undertones</h4>
+            <p>Earthy palettes, warm creams, gold, rust, and clay colors.</p>
+          </div>
+          <div class="dna-card" data-step="2" data-val="cool">
+            <div class="dna-card-emoji">❄️</div>
+            <h4>Cool Undertones</h4>
+            <p>Pastels, cool greys, sky blues, mint green, and silver accents.</p>
+          </div>
+          <div class="dna-card" data-step="2" data-val="contrast">
+            <div class="dna-card-emoji">☯️</div>
+            <h4>High-Contrast Monochrome</h4>
+            <p>Strict blacks, whites, charcoal greys, and high contrast combos.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- STEP 3: SIGNATURE VIBE -->
+      <div class="dna-quiz-step" data-step="3" style="display: none;">
+        <h3 style="font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em; margin-bottom: 14px;">Step 3: Choose Your Signature Aesthetic</h3>
+        <div class="dna-cards-grid">
+          <div class="dna-card" data-step="3" data-val="minimalist">
+            <div class="dna-card-emoji">🕊️</div>
+            <h4>Minimalist & Clean</h4>
+            <p>Simple shapes, neat wardrobe basics, no loud details.</p>
+          </div>
+          <div class="dna-card" data-step="3" data-val="streetwear">
+            <div class="dna-card-emoji">🛹</div>
+            <h4>Streetwear & Edgy</h4>
+            <p>Bold shapes, active hoodies, cargo elements, trending sneakers.</p>
+          </div>
+          <div class="dna-card" data-step="3" data-val="chic">
+            <div class="dna-card-emoji">✨</div>
+            <h4>Chic & Elegant</h4>
+            <p>Polished fabrics, sophisticated layers, elegant and smart.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dna-modal-footer">
+        <button type="button" id="dna-prev-btn" class="btn-outline" style="visibility: hidden;">&larr; Back</button>
+        <button type="button" id="dna-next-btn" class="primary-button" style="width: auto; padding: 10px 24px; margin-top: 0;">Next Step &rarr;</button>
+        <button type="button" id="dna-close-btn" class="btn-outline" style="margin-left: auto;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div id="auth-modal">
+    <div id="auth-modal-content">
+      <h2 id="auth-title">Login</h2>
+      <form id="auth-form">
+        <input type="text" id="auth-username" placeholder="Username" required autocomplete="username">
+        <input type="password" id="auth-password" placeholder="Password" required autocomplete="current-password">
+        <p id="auth-error"></p>
+        <button type="submit" class="primary-button" id="auth-submit">Login</button>
+      </form>
+      <p style="text-align:center; margin-top:14px; font-size:0.85rem; color:var(--text-muted);">
+        <span id="auth-toggle" role="button">Need an account? Register</span>
+      </p>
+      <button id="auth-close" class="btn-outline" style="width:100%; margin-top:10px;">Cancel</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

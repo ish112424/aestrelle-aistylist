@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThreadSense | AI Fashion Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="background-orb orb-one"></div>
+  <div class="background-orb orb-two"></div>
+  <div class="background-grid" aria-hidden="true"></div>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <div class="sparkles" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <p class="eyebrow">AI Outfit Curation</p>
+        <h1>Dress smart for the moment, the forecast, and your personal vibe.</h1>
+        <p class="hero-text">
+          Tell ThreadSense where you are going, how the weather feels, and what you like wearing.
+          It will build a complete outfit with footwear, styling notes, and visual inspiration.
+        </p>
+        <div class="hero-pill-row">
+          <span class="hero-pill">Cute styling</span>
+          <span class="hero-pill">Weather aware</span>
+          <span class="hero-pill">Visual moodboards</span>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="stat-card">
+          <span>Smart matching</span>
+          <strong>Event + weather + style</strong>
+        </div>
+        <div class="stat-card">
+          <span>Looks gallery</span>
+          <strong>Browse by occasion</strong>
+        </div>
+        <div class="stat-card">
+          <span>Personalized memory</span>
+          <strong>Remembers recent picks</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel">
+        <div class="section-heading">
+          <p class="eyebrow">Your Preferences</p>
+          <h2>Build my outfit</h2>
+          <p class="section-note">Pick the mood and let the assistant turn it into a wearable, pretty outfit plan.</p>
+        </div>
+
+        <form id="recommendation-form" class="recommendation-form">
+          <label>
+            Event type
+            <select id="eventType" name="eventType">
+              <option value="casual">Casual</option>
+              <option value="formal">Formal</option>
+              <option value="party">Party</option>
+              <option value="sports">Sports</option>
+              <option value="travel">Travel</option>
+              <option value="date-night">Date night</option>
+            </select>
+          </label>
+
+          <label>
+            Weather
+            <select id="weather" name="weather">
+              <option value="hot">Hot</option>
+              <option value="cold">Cold</option>
+              <option value="rainy">Rainy</option>
+              <option value="humid">Humid</option>
+              <option value="mild">Mild</option>
+              <option value="windy">Windy</option>
+            </select>
+          </label>
+
+          <label>
+            Favorite color palette
+            <select id="colorPalette" name="colorPalette">
+              <option value="neutral">Neutral</option>
+              <option value="earthy">Earthy</option>
+              <option value="pastel">Pastel</option>
+              <option value="bold">Bold</option>
+              <option value="monochrome">Monochrome</option>
+            </select>
+          </label>
+
+          <label>
+            Style direction
+            <select id="style" name="style">
+              <option value="classic">Classic</option>
+              <option value="minimal">Minimal</option>
+              <option value="streetwear">Streetwear</option>
+              <option value="chic">Chic</option>
+              <option value="sporty">Sporty</option>
+              <option value="relaxed">Relaxed</option>
+            </select>
+          </label>
+
+          <label>
+            Gender expression
+            <select id="gender" name="gender">
+              <option value="womenswear">Womenswear</option>
+              <option value="menswear">Menswear</option>
+            </select>
+          </label>
+
+          <label>
+            Comfort level
+            <select id="comfort" name="comfort">
+              <option value="easy">Easygoing</option>
+              <option value="balanced">Balanced</option>
+              <option value="polished">Polished</option>
+            </select>
+          </label>
+
+          <button type="submit" class="primary-button">Recommend outfit</button>
+        </form>
+
+        <div class="memory-chip" id="memory-chip" aria-live="polite"></div>
+      </section>
+
+      <section class="panel result-panel">
+        <div class="section-heading">
+          <p class="eyebrow">Recommendation</p>
+          <h2>Your styled look</h2>
+          <p class="section-note">A complete outfit with styling logic, footwear, and visual references you can actually
+            picture.</p>
+        </div>
+
+        <article id="result-card" class="result-card">
+          <div class="placeholder-state">
+            <h3>Ready when you are</h3>
+            <p>Select your preferences to get an outfit with footwear, visual references, and styling logic.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <section class="panel gallery-panel">
+      <div class="gallery-header">
+        <div class="section-heading">
+          <p class="eyebrow">Photo Gallery</p>
+          <h2>Explore outfit inspiration</h2>
+          <p class="section-note">Browse aesthetic looks by occasion, weather, and trending moods.</p>
+        </div>
+        <div class="gallery-filters" id="gallery-filters">
+          <button class="filter-button active" data-filter="all">All</button>
+          <button class="filter-button" data-filter="casual">Casual</button>
+          <button class="filter-button" data-filter="formal">Formal</button>
+          <button class="filter-button" data-filter="party">Party</button>
+          <button class="filter-button" data-filter="sports">Sports</button>
+          <button class="filter-button" data-filter="trending">Trending</button>
+        </div>
+      </div>
+
+      <div id="gallery-grid" class="gallery-grid"></div>
+    </section>
+  </div>
+
+  <template id="result-template">
+    <div class="result-visual">
+      <img id="result-image" alt="">
+    </div>
+    <div class="result-content">
+      <div class="result-tag-row">
+        <span id="result-event" class="tag"></span>
+        <span id="result-weather" class="tag"></span>
+        <span id="result-style" class="tag"></span>
+      </div>
+      <h3 id="result-title"></h3>
+      <p id="result-description" class="lead"></p>
+      <div class="result-grid">
+        <div>
+          <h4>Outfit description</h4>
+          <p id="result-outfit"></p>
+        </div>
+        <div>
+          <h4>Footwear suggestion</h4>
+          <p id="result-footwear"></p>
+        </div>
+        <div>
+          <h4>Style explanation</h4>
+          <p id="result-explanation"></p>
+        </div>
+        <div>
+          <h4>Visual references</h4>
+          <div id="result-links" class="link-list"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
